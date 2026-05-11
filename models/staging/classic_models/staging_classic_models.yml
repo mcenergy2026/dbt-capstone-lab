@@ -1,0 +1,301 @@
+version: 2
+
+models:
+  - name: stg_customers
+    description: Staging model for customer records from the classic_models customers source.
+    columns:
+      - name: customer_number
+        description: Primary key for each customer.
+        data_tests:
+          - not_null
+          - unique
+      - name: customer_name
+        description: Full customer account name.
+      - name: last_name
+        description: Customer contact last name.
+      - name: first_name
+        description: Customer contact first name.
+      - name: sales_rep_employee_number
+        description: Employee number for the assigned sales representative.
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_employees')
+                field: employee_number
+                where: sales_rep_employee_number is not null
+      - name: customer_email
+        description: Customer contact email address.
+
+  - name: stg_employees
+    description: Staging model for employee records from the classic_models employees source.
+    columns:
+      - name: employee_number
+        description: Primary key for each employee.
+        data_tests:
+          - not_null
+          - unique
+      - name: reports_to
+        description: Employee number of the manager this employee reports to.
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_employees')
+                field: employee_number
+                where: reports_to is not null
+      - name: office_code
+        description: Office identifier for the employee.
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_offices')
+                field: office_code
+      - name: job_title
+        description: Employee job title.
+
+  - name: stg_inventory_transactions
+    description: Staging model for inventory transaction records from the classic_models inventory_transactions source.
+    columns:
+      - name: transaction_id
+        description: Primary key for each inventory transaction.
+        data_tests:
+          - not_null
+          - unique
+      - name: product_code
+        description: Product affected by the inventory transaction.
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_products')
+                field: product_code
+      - name: warehouse_code
+        description: Warehouse where the inventory transaction occurred.
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_warehouses')
+                field: warehouse_code
+      - name: transaction_type
+        description: Type of inventory movement recorded.
+      - name: quantity
+        description: Quantity moved in the transaction.
+      - name: transaction_date
+        description: Date of the inventory transaction.
+
+  - name: stg_offices
+    description: Staging model for office records from the classic_models offices source.
+    columns:
+      - name: office_code
+        description: Primary key for each office.
+        data_tests:
+          - not_null
+          - unique
+      - name: city
+        description: City where the office is located.
+      - name: country
+        description: Country where the office is located.
+      - name: territory
+        description: Sales territory assigned to the office.
+
+  - name: stg_order_details
+    description: Staging model for order line records from the classic_models order_details source.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - order_number
+              - order_line_number
+    columns:
+      - name: order_number
+        description: Foreign key to the order header.
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_orders')
+                field: order_number
+      - name: order_line_number
+        description: Line number within the order.
+        data_tests:
+          - not_null
+      - name: product_code
+        description: Product code for the ordered item.
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_products')
+                field: product_code
+      - name: quantity_ordered
+        description: Quantity ordered on the line.
+      - name: price_each
+        description: Unit price charged for the line item.
+      - name: line_amount
+        description: Extended line amount calculated as quantity ordered multiplied by unit price.
+
+  - name: stg_payments
+    description: Staging model for payment records from the classic_models payments source.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - customer_number
+              - check_number
+    columns:
+      - name: customer_number
+        description: Foreign key to the customer who made the payment.
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_customers')
+                field: customer_number
+      - name: check_number
+        description: Check reference for the payment.
+        data_tests:
+          - not_null
+      - name: payment_date
+        description: Date the payment was received.
+      - name: amount
+        description: Payment amount.
+
+  - name: stg_product_lines
+    description: Staging model for product line records from the classic_models product_lines source.
+    columns:
+      - name: product_line
+        description: Primary key for each product line.
+        data_tests:
+          - not_null
+          - unique
+      - name: text_description
+        description: Plain text description of the product line.
+      - name: html_description
+        description: HTML-formatted description of the product line.
+      - name: image
+        description: Image or binary reference associated with the product line.
+
+  - name: stg_products
+    description: Staging model for product records from the classic_models products source.
+    columns:
+      - name: product_code
+        description: Primary key for each product.
+        data_tests:
+          - not_null
+          - unique
+      - name: product_name
+        description: Product display name.
+      - name: product_line
+        description: Product line category.
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_product_lines')
+                field: product_line
+      - name: product_vendor
+        description: Vendor for the product.
+      - name: quantity_in_stock
+        description: Inventory units currently in stock.
+      - name: buy_price
+        description: Unit cost of the product.
+      - name: msrp
+        description: Suggested retail price of the product.
+
+  - name: stg_promotions
+    description: Staging model for promotion records from the classic_models promotions source.
+    columns:
+      - name: promotion_id
+        description: Primary key for each promotion.
+        data_tests:
+          - not_null
+          - unique
+      - name: product_line
+        description: Product line the promotion applies to when scoped to a specific line.
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_product_lines')
+                field: product_line
+                where: product_line is not null
+      - name: promotion_name
+        description: Promotion display name.
+      - name: discount_pct
+        description: Percentage discount applied by the promotion.
+      - name: start_date
+        description: Promotion start date.
+      - name: end_date
+        description: Promotion end date.
+
+  - name: stg_returns
+    description: Staging model for return records from the classic_models returns source.
+    columns:
+      - name: return_id
+        description: Primary key for each return event.
+        data_tests:
+          - not_null
+          - unique
+      - name: order_number
+        description: Order associated with the return.
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_orders')
+                field: order_number
+      - name: product_code
+        description: Product being returned.
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_products')
+                field: product_code
+      - name: quantity_returned
+        description: Quantity returned.
+      - name: return_date
+        description: Date the return was initiated or recorded.
+      - name: refund_amount
+        description: Refund amount associated with the return.
+      - name: status
+        description: Current return status.
+
+  - name: stg_shipments
+    description: Staging model for shipment records from the classic_models shipments source.
+    columns:
+      - name: shipment_id
+        description: Primary key for each shipment record.
+        data_tests:
+          - not_null
+          - unique
+      - name: order_number
+        description: Order associated with the shipment.
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_orders')
+                field: order_number
+      - name: warehouse_code
+        description: Warehouse fulfilling the shipment.
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_warehouses')
+                field: warehouse_code
+      - name: tracking_number
+        description: Carrier tracking identifier.
+      - name: ship_date
+        description: Date the shipment was sent.
+      - name: shipping_cost
+        description: Cost incurred to ship the order.
+
+  - name: stg_warehouses
+    description: Staging model for warehouse records from the classic_models warehouses source.
+    columns:
+      - name: warehouse_code
+        description: Primary key for each warehouse.
+        data_tests:
+          - not_null
+          - unique
+      - name: warehouse_name
+        description: Warehouse display name.
+      - name: city
+        description: City where the warehouse is located.
+      - name: country
+        description: Country where the warehouse is located.
+      - name: capacity
+        description: Nominal storage capacity for the warehouse.
