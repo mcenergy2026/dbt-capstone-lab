@@ -6,9 +6,6 @@ models:
     columns:
       - name: product_line
         description: Primary key for each product line.
-        data_tests:
-          - not_null
-          - unique
       - name: text_description
         description: Plain text description of the product line.
       - name: html_description

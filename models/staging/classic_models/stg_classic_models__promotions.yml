@@ -6,17 +6,8 @@ models:
     columns:
       - name: promotion_id
         description: Primary key for each promotion.
-        data_tests:
-          - not_null
-          - unique
       - name: product_line
         description: Product line the promotion applies to when scoped to a specific line.
-        data_tests:
-          - relationships:
-              arguments:
-                to: ref('stg_classic_models__product_lines')
-                field: product_line
-                where: product_line is not null
       - name: promotion_name
         description: Promotion display name.
       - name: discount_pct

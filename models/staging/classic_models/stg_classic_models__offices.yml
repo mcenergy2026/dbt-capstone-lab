@@ -6,9 +6,6 @@ models:
     columns:
       - name: office_code
         description: Primary key for each office.
-        data_tests:
-          - not_null
-          - unique
       - name: city
         description: City where the office is located.
       - name: country

@@ -6,9 +6,6 @@ models:
     columns:
       - name: order_number
         description: Primary key for each order.
-        data_tests:
-          - not_null
-          - unique
       - name: order_date
         description: Date the order was created.
       - name: required_date

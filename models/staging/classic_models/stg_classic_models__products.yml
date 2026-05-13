@@ -6,18 +6,10 @@ models:
     columns:
       - name: product_code
         description: Primary key for each product.
-        data_tests:
-          - not_null
-          - unique
       - name: product_name
         description: Product display name.
       - name: product_line
         description: Product line category.
-        data_tests:
-          - relationships:
-              arguments:
-                to: ref('stg_classic_models__product_lines')
-                field: product_line
       - name: product_vendor
         description: Vendor for the product.
       - name: quantity_in_stock

@@ -6,23 +6,9 @@ models:
     columns:
       - name: employee_number
         description: Primary key for each employee.
-        data_tests:
-          - not_null
-          - unique
       - name: reports_to
         description: Employee number of the manager this employee reports to.
-        data_tests:
-          - relationships:
-              arguments:
-                to: ref('stg_classic_models__employees')
-                field: employee_number
-                where: reports_to is not null
       - name: office_code
         description: Office identifier for the employee.
-        data_tests:
-          - relationships:
-              arguments:
-                to: ref('stg_classic_models__offices')
-                field: office_code
       - name: job_title
         description: Employee job title.

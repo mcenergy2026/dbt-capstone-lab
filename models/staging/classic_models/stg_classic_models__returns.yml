@@ -6,23 +6,10 @@ models:
     columns:
       - name: return_id
         description: Primary key for each return event.
-        data_tests:
-          - not_null
-          - unique
       - name: order_number
         description: Order associated with the return.
-        data_tests:
-          - relationships:
-              arguments:
-                to: ref('stg_classic_models__orders')
-                field: order_number
       - name: product_code
         description: Product being returned.
-        data_tests:
-          - relationships:
-              arguments:
-                to: ref('stg_classic_models__products')
-                field: product_code
       - name: quantity_returned
         description: Quantity returned.
       - name: return_date

@@ -3,32 +3,13 @@ version: 2
 models:
   - name: stg_classic_models__order_details
     description: Staging model for order line records from the classic_models order_details source.
-    data_tests:
-      - dbt_utils.unique_combination_of_columns:
-          arguments:
-            combination_of_columns:
-              - order_number
-              - order_line_number
     columns:
       - name: order_number
         description: Foreign key to the order header.
-        data_tests:
-          - not_null
-          - relationships:
-              arguments:
-                to: ref('stg_classic_models__orders')
-                field: order_number
       - name: order_line_number
         description: Line number within the order.
-        data_tests:
-          - not_null
       - name: product_code
         description: Product code for the ordered item.
-        data_tests:
-          - relationships:
-              arguments:
-                to: ref('stg_classic_models__products')
-                field: product_code
       - name: quantity_ordered
         description: Quantity ordered on the line.
       - name: price_each

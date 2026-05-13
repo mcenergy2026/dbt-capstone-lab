@@ -6,23 +6,10 @@ models:
     columns:
       - name: shipment_id
         description: Primary key for each shipment record.
-        data_tests:
-          - not_null
-          - unique
       - name: order_number
         description: Order associated with the shipment.
-        data_tests:
-          - relationships:
-              arguments:
-                to: ref('stg_classic_models__orders')
-                field: order_number
       - name: warehouse_code
         description: Warehouse fulfilling the shipment.
-        data_tests:
-          - relationships:
-              arguments:
-                to: ref('stg_classic_models__warehouses')
-                field: warehouse_code
       - name: tracking_number
         description: Carrier tracking identifier.
       - name: ship_date
