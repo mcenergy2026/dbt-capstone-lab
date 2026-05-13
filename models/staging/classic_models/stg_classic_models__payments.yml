@@ -1,0 +1,28 @@
+version: 2
+
+models:
+  - name: stg_classic_models__payments
+    description: Staging model for payment records from the classic_models payments source.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - customer_number
+              - check_number
+    columns:
+      - name: customer_number
+        description: Foreign key to the customer who made the payment.
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_classic_models__customers')
+                field: customer_number
+      - name: check_number
+        description: Check reference for the payment.
+        data_tests:
+          - not_null
+      - name: payment_date
+        description: Date the payment was received.
+      - name: amount
+        description: Payment amount.
