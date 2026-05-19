@@ -3,7 +3,9 @@ with source as (
     select *
     from {{ source('classic_models', 'order_details') }}
 
-), renamed as (
+),
+
+renamed as (
 
     select
         order_number,
@@ -11,8 +13,8 @@ with source as (
         quantity_ordered,
         price_each,
         order_line_number,
-        quantity_ordered * price_each as line_amount,
-        _sync_date
+        _sync_date,
+        quantity_ordered * price_each as line_amount
     from source
 
 )

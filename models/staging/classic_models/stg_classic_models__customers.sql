@@ -3,13 +3,15 @@ with source as (
     select *
     from {{ source('classic_models', 'customers') }}
 
-), renamed as (
+),
+
+renamed as (
 
     select
         customer_number,
         customer_name,
-        customer_last_name as last_name,
-        customer_first_name as first_name,
+        customer_last_name,
+        customer_first_name,
         phone,
         address_line1,
         address_line2,

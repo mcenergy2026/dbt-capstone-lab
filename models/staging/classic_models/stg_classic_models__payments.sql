@@ -3,7 +3,9 @@ with source as (
     select *
     from {{ source('classic_models', 'payments') }}
 
-), renamed as (
+),
+
+renamed as (
 
     select
         customer_number,

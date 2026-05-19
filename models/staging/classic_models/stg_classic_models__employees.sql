@@ -3,7 +3,9 @@ with source as (
     select *
     from {{ source('classic_models', 'employees') }}
 
-), renamed as (
+),
+
+renamed as (
 
     select
         employee_number,

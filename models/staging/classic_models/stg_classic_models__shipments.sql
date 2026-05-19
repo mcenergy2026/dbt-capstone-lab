@@ -3,7 +3,9 @@ with source as (
     select *
     from {{ source('classic_models', 'shipments') }}
 
-), renamed as (
+),
+
+renamed as (
 
     select
         shipment_id,

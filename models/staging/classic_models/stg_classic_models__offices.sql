@@ -3,7 +3,9 @@ with source as (
     select *
     from {{ source('classic_models', 'offices') }}
 
-), renamed as (
+),
+
+renamed as (
 
     select
         office_code,
